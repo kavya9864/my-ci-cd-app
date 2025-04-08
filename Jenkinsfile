@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = 'yourdockerhubusername/yourapp:latest'
+        DOCKER_IMAGE = 'kavyasreen/yourapp:latest'
     }
 
     stages {
@@ -38,18 +38,19 @@ pipeline {
         }
 
         stage('Deploy') {
-    steps {
-        script {
-            sh '''
-            CONTAINER_ID=$(docker ps -aqf "name=myapp")
-            if [ ! -z "$CONTAINER_ID" ]; then
-                docker rm -f $CONTAINER_ID
-            fi
-            docker run -d --name myapp -p 80:80 ${DOCKER_IMAGE}
-            '''
+            steps {
+                script {
+                    sh '''
+                    CONTAINER_ID=$(docker ps -aqf "name=myapp")
+                    if [ ! -z "$CONTAINER_ID" ]; then
+                        docker rm -f $CONTAINER_ID
+                    fi
+                    docker run -d --name myapp -p 80:80 ${DOCKER_IMAGE}
+                    '''
+                }
+            }
         }
-    }
-}
+    } // ✅ this was missing! Closing the stages block
 
     post {
         always {
